@@ -69,18 +69,14 @@ graph.add_edge("analyze_report", END)
 
 workflow = graph.compile()
 
-if __name__ == "__main__":
-    image_path = input(
-        "Enter the report image path: "
-    )
-
+def analyze_medical_report(image_path: str):
     result = workflow.invoke(
         {
             "image_path": image_path
         }
     )
 
-    print("\n===== EXTRACTED TEXT =====\n")
-    print(result["extracted_text"])
-    print("\n===== REPORT ANALYSIS =====\n")
-    print(result["analysis"])
+    return {
+        "extracted_text": result["extracted_text"],
+        "analysis": result["analysis"]
+    }

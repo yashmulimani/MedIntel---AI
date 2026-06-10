@@ -86,18 +86,8 @@ graph.add_edge("interpret_bmi", END)
 
 workflow = graph.compile()
 
-if __name__ == "__main__":
-    print("\n=== MedIntel BMI Assistant ===\n")
-    weight = float(
-        input(
-            "AI: Please provide your weight in kilograms: "
-        )
-    )
-    height = float(
-        input(
-            "AI: Please provide your height in meters: "
-        )
-    )
+
+def get_bmi_report(weight: float, height: float):
     result = workflow.invoke(
         {
             "weight": weight,
@@ -105,22 +95,8 @@ if __name__ == "__main__":
         }
     )
 
-    print("\n===== BMI REPORT =====")
-    print(
-        f"BMI: {result['bmi']}"
-    )
-    print(
-        f"Category: {result['category']}"
-    )
-    print("\nAdvice:")
-    print(
-        result["advice"]
-    )
-    print(
-        "\nDisclaimer:"
-    )
-    print(
-        "This information is for educational purposes "
-        "only and is not a substitute for professional "
-        "medical advice."
-    )
+    return {
+        "bmi": result["bmi"],
+        "category": result["category"],
+        "advice": result["advice"]
+    }

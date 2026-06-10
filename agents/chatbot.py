@@ -11,10 +11,6 @@ from schemas.healthcare_response import HealthcareResponse
 
 from typing import Optional
 
-import uuid
-
-thread_id = str(uuid.uuid4())
-
 load_dotenv()
 
 llm = ChatGroq(
@@ -46,20 +42,13 @@ graph.add_edge("chat_node",END)
 
 workflow = graph.compile(checkpointer = checkpointer)
 
-while True:
-    user_input = input("Type Here...")
+# Function for FastAPI
+def get_chat_response(message: str, thread_id: str) -> str:
+    config = {
+        "configurable": {
+            "thread_id": thread_id
+        }
+    }
+    response = workflow.invoke({"messages": [HumanMessage(content=message)]},config=config)
 
-    if user_input.lower() == "new_chat":
-        thread_id = str(uuid.uuid4())
-
-        print(f"Started new chat: {thread_id}")
-        continue
-
-    if user_input.strip().lower() in ["exit", "quit", "bye"]:
-        break
-
-    config = {"configurable": {"thread_id": thread_id}}
-
-    response = workflow.invoke({'messages': [HumanMessage(content=user_input)]}, config=config)
-
-    print('AI:',response['messages'][-1].content)
+    return response["messages"][-1].content
